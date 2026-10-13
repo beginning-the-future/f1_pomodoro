@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>J.A.R.V.I.S. · F1 Study Control</title><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet"><style>
+:root{--c:#00e5ff;--o:#ff6a00;--bg:#02060d;--p:rgba(3,18,31,.82);--t:#d8f6ff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}html,body{height:100%}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--t);font:700 15px Rajdhani,system-ui,sans-serif;overflow:hidden}
+body:after{content:"";position:fixed;inset:0;z-index:9;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 3px)}
+#bg{position:fixed;inset:0;z-index:0}.scr{position:fixed;inset:0;z-index:2;padding:16px 26px;overflow:auto}
+h1,h2,.o{font-family:Orbitron,system-ui,sans-serif}h1{font-size:20px;margin:0;letter-spacing:3px;color:var(--c);text-shadow:0 0 12px var(--c)}
+h2{font-size:12px;margin:0 0 10px;color:var(--o);letter-spacing:2px}
+.card{background:var(--p);border:1px solid rgba(0,229,255,.4);padding:14px;backdrop-filter:blur(6px);box-shadow:0 0 18px rgba(0,229,255,.12),inset 0 0 22px rgba(0,229,255,.05);clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px))}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px;margin-top:14px}
+.b{background:transparent;border:1px solid var(--c);color:var(--c);padding:8px 12px;font:800 12px Orbitron,sans-serif;letter-spacing:1px;cursor:pointer;margin:3px}.b:hover,.b.on{background:var(--c);color:#001018;box-shadow:0 0 14px var(--c)}
+.go{border-color:var(--o);color:var(--o);font-size:16px;padding:14px 26px}.go:hover{background:var(--o);color:#001018;box-shadow:0 0 22px var(--o)}
+select,#subj{background:#04141f;color:var(--c);border:1px solid var(--c);padding:8px;font:700 14px Rajdhani,sans-serif;width:100%}input[type=range]{accent-color:var(--o);width:100%}
+.rc{width:54px;height:54px;border-radius:50%;margin:0 auto 12px;border:4px double var(--c);box-shadow:0 0 22px var(--c),inset 0 0 16px var(--c);background:radial-gradient(circle,#fff 0 12%,#00e5ff66 14% 45%,transparent 47%);animation:sp 6s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+#drv{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:5px;max-height:250px;overflow:auto}
+.dv{border:1px solid #1d4a5c;border-left:6px solid var(--k);padding:5px 7px;cursor:pointer;font-size:13px;background:rgba(0,0,0,.35)}.dv.on{background:rgba(0,229,255,.25);box-shadow:0 0 10px var(--k)}
+#race{display:none;grid-template-columns:230px minmax(0,1fr) 330px;grid-template-rows:auto minmax(0,1fr);gap:10px;padding:12px 16px;overflow:hidden}
+#top{grid-column:1/4;display:flex;justify-content:space-between;align-items:center;padding:8px 18px}
+#tm{font:800 46px Orbitron,sans-serif;color:var(--c);text-shadow:0 0 18px var(--c)}
+#tw{padding:6px 8px;overflow:hidden}.r{display:flex;align-items:center;gap:6px;height:23px;font-size:13px;border-bottom:1px solid #123a4c}
+.r b{width:20px;text-align:right}.r i{width:5px;height:15px;background:var(--k)}.r span{flex:1}.r em{font-style:normal;opacity:.8;font-size:12px}.r u{text-decoration:none;font-weight:800;width:12px}.r.me{background:rgba(255,106,0,.3);box-shadow:inset 0 0 0 1px var(--o)}
+#cw{position:relative;padding:0;min-height:0;overflow:hidden}#trk{width:100%;height:100%;display:block}
+.ov{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;display:none;background:rgba(2,10,18,.94);border:2px solid var(--o);padding:18px 26px;box-shadow:0 0 30px var(--o)}
+#cd{position:absolute;top:12px;left:0;right:0;text-align:center;font-size:40px;color:#ff2e4d;letter-spacing:10px;display:none}
+#dash{display:flex;flex-direction:column;gap:10px;min-height:0}.st{display:grid;grid-template-columns:1fr 1fr;gap:8px}.st div{background:rgba(0,229,255,.07);padding:6px 8px}
+.st small{display:block;font:500 10px Orbitron,sans-serif;color:var(--o)}.st strong{font:800 17px Orbitron,sans-serif}
+.bar{height:10px;background:#0a2230;margin-top:4px}#wr{height:100%;width:0}#sc{display:flex;gap:6px;margin-top:8px}#sc i{flex:1;height:8px;background:#0a2230}#sc i.g{background:#2ecc71}#sc i.y{background:#ffd400}
+#log{overflow:auto;font-size:14px;flex:1}#log div{margin-bottom:6px;border-left:2px solid var(--o);padding-left:6px}#log b{color:var(--o);font:800 10px Orbitron,sans-serif}
+</style></head><body><canvas id="bg"></canvas>
+<div id="boot" class="scr" style="display:grid;place-items:center;text-align:center"><div><div class="rc"></div><h1>J.A.R.V.I.S.</h1><p class="o" style="color:var(--o);letter-spacing:3px;font-size:12px">GRAND PRIX STUDY CONTROL · ALL SYSTEMS STANDING BY</p><button class="b go" id="init">▶ INITIALISE</button></div></div>
+<div id="setup" class="scr" style="display:none"><div style="display:flex;align-items:center;gap:14px"><div class="rc" style="margin:0"></div><div><h1>J.A.R.V.I.S. · RACE CONTROL</h1><div style="opacity:.8">Configure the mission, then start engines.</div></div></div>
+<div class="grid">
+<section class="card"><h2>01 · CIRCUIT (24)</h2><select id="trk0"></select><canvas id="pv" width="300" height="170" style="width:100%;margin-top:8px"></canvas></section>
+<section class="card"><h2>02 · DRIVER (22)</h2><div id="drv"></div></section>
+<section class="card"><h2>03 · MISSION · RACE LENGTH</h2><input id="subj" placeholder="What are you studying?"><div class="o" id="mn" style="font-size:24px;color:var(--c);margin:8px 0"></div><input id="rg" type="range" min="10" max="180" step="5" value="45"><div id="inf" style="opacity:.8"></div><h2 style="margin-top:12px">PIT STRATEGY (BREAKS)</h2><div id="pits"></div></section>
+<section class="card"><h2>04 · WEATHER · TYRES</h2><div id="wx"></div><div id="tys" style="margin-top:6px"></div><div id="rec" style="color:var(--o)"></div></section>
+<section class="card"><h2>05 · AUDIO</h2><div id="sng"></div><label class="b" style="display:inline-block">⬆ CUSTOM MP3<input id="mp3" type="file" accept="audio/*" hidden></label><button class="b on" id="vc">🎙 ENGINEER: ON</button><div style="margin-top:8px">VOLUME<input id="vol" type="range" value="40"></div></section>
+<section class="card" style="display:grid;place-items:center"><button class="b go" id="gob">🏁 START ENGINES</button></section></div></div>
+<div id="race" class="scr"><div id="top" class="card"><div><div id="ms" class="o" style="color:var(--o);font-size:13px"></div><div id="wl" class="o" style="font-size:12px"></div></div><div id="tm">00:00</div><div class="o" style="font-size:12px">LAP <b id="lp" style="font-size:20px;color:var(--c)"></b></div><div><button class="b" id="pz">PAUSE</button><button class="b" id="mu">♪ ON</button><button class="b" id="ab">ABORT</button></div></div>
+<div id="tw" class="card"></div>
+<div id="cw" class="card"><canvas id="trk"></canvas><div id="cd"></div><div id="box" class="ov"><h1 style="color:var(--o)">BOX · BOX · BOX</h1><p>Race engineer calling you in. Choose tyres:</p><div id="bo"></div></div><div id="pitov" class="ov o" style="color:var(--o)"></div></div>
+<div id="dash"><div class="card"><h2>TELEMETRY · <span id="dn"></span></h2><div class="st"><div><small>POSITION</small><strong id="pos"></strong></div><div><small>SPEED</small><strong id="sp"></strong></div><div><small>GAP AHEAD</small><strong id="ga"></strong></div><div><small>GAP BEHIND</small><strong id="gb"></strong></div><div><small>TYRE</small><strong id="tn"></strong></div><div><small>PIT STOPS</small><strong id="ps"></strong></div></div><div class="bar"><div id="wr"></div></div><div id="sc"></div></div>
+<div class="card" style="flex:1;min-height:0;display:flex;flex-direction:column"><h2>RACE ENGINEER · RADIO</h2><div id="log"></div></div></div></div>
+<div id="res" class="scr" style="display:none;place-items:center"><div class="card" style="width:min(460px,92%);text-align:center"><h1>🏁 CHEQUERED FLAG</h1><div id="rt" class="o" style="color:var(--o);margin:8px 0"></div><div id="rl" style="text-align:left"></div><button class="b go" id="nr" style="margin-top:12px;font-size:13px;padding:10px 18px">NEW RACE</button></div></div>
+<script>
+const $=i=>document.getElementById(i),rnd=Math.random,
+TR="Melbourne,Shanghai,Suzuka,Bahrain,Jeddah,Miami,Montreal,Monaco,Barcelona,Spielberg,Silverstone,Spa,Hungaroring,Zandvoort,Monza,Madrid,Baku,Singapore,Austin,Mexico City,Interlagos,Las Vegas,Lusail,Yas Marina".split(","),
+DR="VER,Verstappen,#3671c6;HAD,Hadjar,#3671c6;LEC,Leclerc,#e8002d;HAM,Hamilton,#e8002d;NOR,Norris,#ff8000;PIA,Piastri,#ff8000;RUS,Russell,#27f4d2;ANT,Antonelli,#27f4d2;ALO,Alonso,#229971;STR,Stroll,#229971;GAS,Gasly,#ff87bc;COL,Colapinto,#ff87bc;ALB,Albon,#64c4ff;SAI,Sainz,#64c4ff;LAW,Lawson,#6692ff;LIN,Lindblad,#6692ff;OCO,Ocon,#b6babd;BEA,Bearman,#b6babd;HUL,Hülkenberg,#c8ff00;BOR,Bortoleto,#c8ff00;PER,Pérez,#ffffff;BOT,Bottas,#ffffff".split(";").map(s=>{const[a,n,c]=s.split(",");return{a,n,c}}),
+WX=["☀️ SUNNY","🔥 HOT","☁️ OVERCAST","🌧️ RAIN","⛈️ STORM"],
+TY={S:["SOFT","#ff2e4d",.3,1],M:["MEDIUM","#ffd400",.5,.992],H:["HARD","#f2f2f2",.8,.984],I:["INTER","#2ecc71",.55,1],W:["WET","#3b82f6",.6,1]},
+tl=w=>w<3?"SMH":w==3?"IW":"WI",rec=w=>"MHMIW"[w],
+F=["Good pace. Eyes on the screen, phone away.","Hydrate when you can, sir.","Consistency wins races. Keep the rhythm.","Tyre temps nominal. Stay in the zone.","Sector times look strong. Do not lose focus.","Stay calm, no mistakes. We rest in the pits."],
+SG=[{n:"NEON GRID",b:96,c:[45,41,48,43],w:"triangle",ar:[0,7,12,7,3,7,12,15],ad:2,k:0,g:.1},{n:"PIT LANE LO-FI",b:76,c:[50,47,45,52],w:"sine",ar:[0,3,7,12,7,3],ad:3,k:1,g:.16},{n:"TURBO PULSE",b:126,c:[40,40,43,38],w:"sawtooth",ar:[0,12,7,12],ad:1,k:2,g:.045},{n:"DEEP SPACE",b:58,c:[38,41,36,43],w:"sine",ar:[0,7,14,12],ad:8,k:0,g:.12}],
+cfg={t:0,d:0,m:45,p:1,w:0,ty:"M",s:0,v:1};
+let G,W,H,X,P,tc,ac,mg,iv,cu,an,st=0,ph=0,wp=1,mx=.5,my=.5,mon=1;
+const rng=a=>()=>{a=a+1831565813|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296},
+gp=x=>(Math.max(0,x)*G.T/G.L).toFixed(1),mf=m=>440*2**((m-69)/12),
+rw=(c,i,e,u="")=>`<div class="r${c.me?" me":""}" style="--k:${c.c}"><b>${i+1}</b><i></i><span>${c.a}</span><em>${e}</em>${u}</div>`;
+function mk(i,W,H){const r=rng(i*7919+31),A=[],Q=[],n=240,sx=1.2+r()*.5,q=[];
+for(let j=0;j<4;j++){A.push((.1+r()*.16)/(1+j*.45));Q.push(r()*6.3)}
+for(let k=0;k<n;k++){const a=k/n*6.2832;let R=1;for(let j=0;j<4;j++)R+=A[j]*Math.sin((j+2)*a+Q[j]);q.push([R*Math.cos(a)*sx,R*Math.sin(a)])}
+const xs=q.map(v=>v[0]),ys=q.map(v=>v[1]),a0=Math.min(...xs),a1=Math.max(...xs),b0=Math.min(...ys),b1=Math.max(...ys),pd=W>400?34:14,s=Math.min((W-2*pd)/(a1-a0),(H-2*pd)/(b1-b0)),ox=(W-(a1-a0)*s)/2-a0*s,oy=(H-(b1-b0)*s)/2-b0*s,p=q.map(([x,y])=>[x*s+ox,y*s+oy]),cl=[0];
+for(let k=1;k<=n;k++){const a=p[k-1],b=p[k%n];cl.push(cl[k-1]+Math.hypot(b[0]-a[0],b[1]-a[1]))}
+const tot=cl[n],O=[];let j=0;
+for(let m=0;m<600;m++){const g=m/600*tot;while(j<n-1&&cl[j+1]<g)j++;const f=(g-cl[j])/(cl[j+1]-cl[j]),a=p[j],b=p[(j+1)%n];O.push([a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f])}return O}
+function paint(y,P,W,H){y.clearRect(0,0,W,H);const big=W>400,pa=()=>{y.beginPath();P.forEach((p,i)=>i?y.lineTo(p[0],p[1]):y.moveTo(p[0],p[1]));y.closePath()};y.lineJoin=y.lineCap="round";
+pa();y.strokeStyle="rgba(0,229,255,.9)";y.lineWidth=big?24:12;y.shadowColor="#00e5ff";y.shadowBlur=18;y.stroke();y.shadowBlur=0;
+pa();y.strokeStyle="#07131e";y.lineWidth=big?19:9;y.stroke();
+pa();y.strokeStyle="rgba(255,255,255,.2)";y.lineWidth=1.5;y.setLineDash([8,10]);y.stroke();y.setLineDash([]);
+[[0,"#fff"],[200,"#ffd400"],[400,"#ff2e4d"]].forEach(([i,c])=>{const[a,b]=P[i],[e,f]=P[(i+3)%600],n=Math.atan2(f-b,e-a)+1.5708,s=big?13:7;y.beginPath();y.moveTo(a-Math.cos(n)*s,b-Math.sin(n)*s);y.lineTo(a+Math.cos(n)*s,b+Math.sin(n)*s);y.strokeStyle=c;y.lineWidth=3;y.stroke()})}
+function fit(){const c=$("trk"),k=devicePixelRatio>1?2:1;W=c.clientWidth;H=c.clientHeight;c.width=W*k;c.height=H*k;X=c.getContext("2d");X.setTransform(k,0,0,k,0,0);P=mk(cfg.t,W,H);tc=document.createElement("canvas");tc.width=W*k;tc.height=H*k;const y=tc.getContext("2d");y.setTransform(k,0,0,k,0,0);paint(y,P,W,H)}
+function opts(id,list,key,cb,val=i=>i){const e=$(id);e.innerHTML="";list.forEach((l,i)=>{const b=document.createElement("button");b.className="b"+(val(i)==cfg[key]?" on":"");b.innerHTML=l;b.onclick=()=>{cfg[key]=val(i);[...e.children].forEach(c=>c.classList.remove("on"));b.classList.add("on");cb&&cb()};e.appendChild(b)})}
+function tyo(){cfg.ty=rec(cfg.w);opts("tys",tl(cfg.w).split("").map(k=>`<span style="color:${TY[k][1]}">●</span> ${TY[k][0]}`),"ty",null,i=>tl(cfg.w)[i]);$("rec").textContent="Engineer recommends: "+TY[rec(cfg.w)][0]}
+const upd=()=>{$("mn").textContent=cfg.m+" MIN";$("inf").textContent=Math.max(4,Math.round(cfg.m/2.5))+" laps · each pit stop = 30 s break"},pv=()=>paint($("pv").getContext("2d"),mk(cfg.t,300,170),300,170);
+/* audio */
+function nt(f,t,d,w,g){const o=ac.createOscillator(),e=ac.createGain();o.type=w;o.frequency.value=f;e.gain.setValueAtTime(.0001,t);e.gain.linearRampToValueAtTime(g,t+.02);e.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(e);e.connect(mg);o.start(t);o.stop(t+d+.05)}
+function bt(s,t){const S=SG[s],d=60/S.b/4,r=S.c[(st>>4)%4];
+if(st%16==0){[0,3,7].forEach(i=>nt(mf(r+12+i),t,d*15,"sine",.05));nt(mf(r),t,d*16,"sine",.2)}
+if(st%S.ad==0)nt(mf(r+24+S.ar[(st/S.ad|0)%S.ar.length]),t,d*S.ad*1.6,S.w,S.g);
+if(S.k&&st%(S.k==2?4:8)==0){const o=ac.createOscillator(),e=ac.createGain();o.frequency.setValueAtTime(140,t);o.frequency.exponentialRampToValueAtTime(40,t+.15);e.gain.setValueAtTime(.5,t);e.gain.exponentialRampToValueAtTime(.001,t+.2);o.connect(e);e.connect(mg);o.start(t);o.stop(t+.25)}}
+function play(s){if(!ac){ac=new AudioContext();mg=ac.createGain();mg.gain.value=$("vol").value/100;mg.connect(ac.destination)}ac.resume();clearInterval(iv);if(cu)cu.pause();
+if(s==4&&cu){cu.play();return}st=0;an=ac.currentTime+.1;iv=setInterval(()=>{while(an<ac.currentTime+.3){bt(cfg.s,an);an+=60/SG[cfg.s].b/4;st++}},80)}
+function stopM(){clearInterval(iv);if(cu)cu.pause()}
+/* engineer voice */
+function sp(m,p){if(!cfg.v||!window.speechSynthesis)return;if(p)speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(m),V=speechSynthesis.getVoices(),v=V.find(x=>/en-GB/i.test(x.lang)&&/\bmale\b|daniel|ryan/i.test(x.name))||V.find(x=>/en-GB/i.test(x.lang));if(v)u.voice=v;u.rate=1.08;u.pitch=.8;speechSynthesis.speak(u)}
+function say(m,p){const l=$("log"),d=document.createElement("div");d.innerHTML="<b>ENG</b> "+m;l.prepend(d);while(l.children.length>14)l.lastChild.remove();sp(m,p)}
+/* race */
+function go(){window.speechSynthesis&&speechSynthesis.cancel();$("setup").style.display="none";$("res").style.display="none";$("race").style.display="grid";$("log").innerHTML="";
+const T=cfg.m*60,L=Math.max(4,Math.round(cfg.m/2.5)),w=cfg.w,me={...DR[cfg.d],me:1,base:1,tire:cfg.ty,w:0,pit:0,stops:0,d:0},
+ai=DR.filter((_,i)=>i!=cfg.d).sort(()=>rnd()-.5).map(x=>{const n=[0,1,1,1,2][rnd()*5|0];return{...x,base:.978+rnd()*.04,tire:w>2?rec(w):"SMH"[rnd()*3|0],w:0,pit:0,stops:0,d:0,plan:n?n==1?[.35+rnd()*.3]:[.2+rnd()*.15,.55+rnd()*.15]:[]}});
+ai.splice(9,0,me);ai.forEach((c,i)=>{c.d=-i*.013-.02;c.rk=i+1});
+G={T,L,me,cars:ai,o:[...ai],t0:Date.now()+5000,pz:0,tp:-5,go:0,paused:0,over:0,rk:10,lastRk:0,box:0,ask:0,nx:40,lap:0,f:{},u:0};
+$("ms").textContent="MISSION · "+($("subj").value.trim().toUpperCase()||"DEEP FOCUS");$("wl").textContent=WX[w];$("dn").textContent=me.n.toUpperCase();$("pz").textContent="PAUSE";fit();
+say(`Radio check. ${me.n}, you start P10 on ${TY[me.tire][0].toLowerCase()} tyres. ${L} laps, ${cfg.p} planned stop${cfg.p==1?"":"s"}. Lights out in five.`,1)}
+const best=f=>{const l=tl(cfg.w).split("");return l.find(k=>TY[k][2]*(cfg.w==1?.75:1)>=1-f)||l[l.length-1]};
+function pit(k){const g=G,m=g.me;m.tire=k;m.w=0;m.pit=30;m.stops++;g.box=0;$("box").style.display="none";say(`Box confirmed. ${TY[k][0]} tyres going on. Thirty seconds, stretch and hydrate.`,1)}
+function stay(){const g=G;g.box=0;g.ask=g.tp+.08*g.T;$("box").style.display="none";say("Copy, staying out. Manage those tyres.",1)}
+function update(){const g=G;if(!g||g.paused||g.over)return;const{T,L,me}=g;let t=(Date.now()-g.t0-g.pz)/1000;
+if(t<0){$("cd").style.display="block";const k=Math.min(5,Math.floor(t+6));$("cd").textContent="●".repeat(k)+"○".repeat(5-k);return}
+if(!g.go){g.go=1;g.tp=0;$("cd").style.display="none";say("Lights out and away we go!",1)}
+t=Math.min(t,T);const dt=t-g.tp;g.tp=t;
+g.cars.forEach(c=>{if(c.pit>0){c.pit-=dt;if(c.me&&c.pit<=0)say(`Out of the pits. Fresh ${TY[c.tire][0].toLowerCase()} tyres, push now!`)}
+c.w+=dt/T/(TY[c.tire][2]*(cfg.w==1?.75:1));
+const pc=c.base*TY[c.tire][3]*(cfg.w==3&&c.tire=="W"?.97:cfg.w==4&&c.tire=="I"?.94:1)*(1-.2*Math.max(0,c.w-.7));c.pc=pc;c.d+=dt*L/T*pc*(c.pit>0?.2:1);
+if(!c.me&&c.plan.length&&t/T>=c.plan[0]){c.plan.shift();c.pit=18;c.stops++;c.w=0;c.tire=cfg.w>2?rec(cfg.w):"SMH"[rnd()*3|0]}});
+const o=[...g.cars].sort((a,b)=>b.d-a.d);o.forEach((c,i)=>c.rk=i+1);g.o=o;
+const r=me.rk,lp=Math.min(L,Math.floor(me.d)+1),A=o[r-2],B=o[r],f=t/T;
+if(me.d>0&&lp!=g.lap){g.lap=lp;g.rk=r;say(`Lap ${lp} of ${L}. You are P${r}. `+(A?`${A.a} ahead, ${gp(A.d-me.d)} seconds. `:"You are leading! ")+(B?`${B.a} behind, ${gp(me.d-B.d)} seconds.`:"")+(lp%3==0&&r>2?` Leader is ${o[0].a}.`:""))}
+else if(r!=g.rk&&me.d>.05&&t-g.lastRk>10){g.lastRk=t;say(r<g.rk?`Overtake! You are P${r}. ${B.a} is behind.`:`Lost a place to ${A.a}. P${r}. Fight back.`);g.rk=r}
+[.5,.75,.95].forEach(v=>{const k=v+"_"+me.stops;if(me.w>=v&&!g.f[k]){g.f[k]=1;say(`Tyre wear ${Math.round(me.w*100)} percent.`+(v>.7?" Performance is falling off.":""))}});
+if(!g.box&&me.pit<=0&&me.stops<cfg.p&&t>=g.ask&&f<.9&&(f>=(cfg.p==1?.5:[.33,.66][me.stops])||me.w>.72)){g.box=t;g.rep=0;const bs=best(f);
+$("bo").innerHTML=tl(cfg.w).split("").map(k=>`<button class="b${k==bs?" on":""}" onclick="pit('${k}')">${TY[k][0]}</button>`).join("")+`<button class="b" onclick="stay()">STAY OUT</button>`;$("box").style.display="block";
+say(`Box, box, box! Tyres at ${Math.round(me.w*100)} percent. I recommend ${TY[bs][0].toLowerCase()}. Your call.`,1)}
+else if(g.box){if(!g.rep&&t-g.box>20){g.rep=1;say("Box, box! Confirm the stop.",1)}if(t-g.box>50)stay()}
+[[300,"m5","Five minutes to go. Stay locked in."],[60,"m1","One minute. Bring it home!"]].forEach(([s,k,m])=>{if(T>s*2&&T-t<s&&!g.f[k]){g.f[k]=1;say(m)}});
+if(t>g.nx){g.nx=t+35+rnd()*30;say(F[rnd()*F.length|0])}
+if(t>=T){g.over=1;fin()}}
+function fin(){const g=G,r=g.me.rk;$("box").style.display="none";$("res").style.display="grid";
+$("rl").innerHTML=g.o.slice(0,10).map((c,i)=>rw(c,i,c.n)).join("")+(r>10?rw(g.me,r-1,"YOU"):"");
+$("rt").textContent=`P${r} · ${cfg.m} MIN FOCUSED · ${g.me.stops} PIT STOP${g.me.stops==1?"":"S"}`;
+say(r==1?"Chequered flag! P1! Absolutely fantastic, sir!":r<4?`Chequered flag, P${r}. Podium! Great work.`:`Chequered flag. P${r}. Solid stint. Now take a proper break.`,1)}
+function draw(){X.clearRect(0,0,W,H);X.drawImage(tc,0,0,W,H);
+[...G.cars].sort((a,b)=>a.me?1:b.me?-1:0).forEach(c=>{const u=((c.d%1)+1)%1*600,i=u|0,f=u-i,a=P[i],b=P[(i+1)%600],px=a[0]+(b[0]-a[0])*f,py=a[1]+(b[1]-a[1])*f,s=c.me?1.5:1;
+X.save();X.translate(px,py);X.rotate(Math.atan2(b[1]-a[1],b[0]-a[0]));X.globalAlpha=c.pit>0?.45:1;if(c.me){X.shadowColor=c.c;X.shadowBlur=18}
+X.fillStyle=c.c;X.fillRect(-7*s,-3.5*s,14*s,7*s);X.fillStyle="#fff";X.fillRect(-s,-1.5*s,3*s,3*s);X.restore();
+if(c.me||c.rk<4){X.fillStyle="#fff";X.font="700 11px Orbitron,sans-serif";X.fillText(c.a,px+10,py-10)}})}
+function ui(){const g=G,n=Date.now();if(n-g.u<200)return;g.u=n;const me=g.me,t=Math.max(0,Math.min(g.T,g.paused?g.fz:(n-g.t0-g.pz)/1000)),rm=Math.ceil(g.T-t),o=g.o,r=me.rk,A=o[r-2],B=o[r],s=Math.floor((((me.d%1)+1)%1)*3);
+$("tm").textContent=String(rm/60|0).padStart(2,"0")+":"+String(rm%60).padStart(2,"0");
+$("tw").innerHTML=o.map((c,i)=>rw(c,i,i?"+"+gp(o[0].d-c.d):"LEAD",`<u style="color:${TY[c.tire][1]}">${c.tire}</u>`)).join("");
+$("lp").textContent=Math.min(g.L,Math.max(1,Math.floor(me.d)+1))+"/"+g.L;$("pos").textContent="P"+r;
+$("ga").textContent=A?"+"+gp(A.d-me.d)+"s":"—";$("gb").textContent=B?"-"+gp(me.d-B.d)+"s":"—";
+$("sp").textContent=Math.round(250*(me.pc||1)*(me.pit>0?.25:1)*(.85+.15*Math.sin(me.d*37)))+" km/h";
+$("tn").innerHTML=`<span style="color:${TY[me.tire][1]}">●</span> ${TY[me.tire][0]}`;const wr=$("wr");wr.style.width=Math.min(100,me.w*100)+"%";wr.style.background=me.w>.75?"#ff2e4d":me.w>.5?"#ffd400":"#2ecc71";
+$("sc").innerHTML=[0,1,2].map(i=>`<i class="${i<s?"g":i==s?"y":""}"></i>`).join("");$("ps").textContent=me.stops+"/"+cfg.p;
+const po=$("pitov");po.style.display=me.pit>0?"block":"none";po.textContent="PIT STOP · STRETCH · "+Math.ceil(me.pit)+"s"}
+function leave(){G=null;window.speechSynthesis&&speechSynthesis.cancel();$("race").style.display="none";$("res").style.display="none";$("setup").style.display="block";if(mon)play(cfg.s)}
+/* background: 3D perspective tunnel + starfield */
+const bg=$("bg"),B=bg.getContext("2d"),ST=[...Array(240)].map(()=>({x:rnd()*2-1,y:rnd()*2-1,z:rnd()})),sz=()=>{bg.width=innerWidth;bg.height=innerHeight};sz();
+onresize=()=>{sz();G&&fit()};onmousemove=e=>{mx=e.clientX/innerWidth;my=e.clientY/innerHeight};
+function bgf(){const w=bg.width,h=bg.height,cx=w/2+(mx-.5)*90,hz=h*.52+(my-.5)*40,run=G&&G.go&&!G.paused&&!G.over;wp+=((run?3:1)-wp)*.03;ph=(ph+.01*wp)%1;
+const gr=B.createLinearGradient(0,0,0,h);gr.addColorStop(0,"#01040a");gr.addColorStop(.52,"#07304d");gr.addColorStop(1,"#01040a");B.fillStyle=gr;B.fillRect(0,0,w,h);
+B.fillStyle="#bfeaff";ST.forEach(s=>{s.z-=.0022*wp;if(s.z<.02)s.z=1;const k=w*.22/s.z,x=cx+s.x*k,y=hz+s.y*k*.6;if(y<hz-4&&x>0&&x<w){const q=(1-s.z)*2.6+.4;B.fillRect(x,y,q,q)}});
+B.strokeStyle="rgba(0,229,255,.3)";B.lineWidth=1;B.beginPath();for(let i=0;i<22;i++){const z=((i+ph)%22)/22,y=hz+(h-hz)*z*z;B.moveTo(0,y);B.lineTo(w,y)}
+for(let k=-14;k<=14;k++){B.moveTo(cx+k*10,hz);B.lineTo(cx+k*w*.09,h)}B.stroke();B.fillStyle="rgba(255,106,0,.4)";B.fillRect(0,hz-1,w,2);
+if(G&&cfg.w>2){B.strokeStyle="rgba(160,210,255,.3)";B.beginPath();for(let i=0;i<(cfg.w==4?170:80);i++){const x=rnd()*w,y=rnd()*h;B.moveTo(x,y);B.lineTo(x-4,y+16)}B.stroke()}}
+function loop(){bgf();if(G){update();draw();ui()}requestAnimationFrame(loop)}loop();setInterval(()=>{G&&update()},500);
+/* setup wiring */
+$("trk0").innerHTML=TR.map((n,i)=>`<option value="${i}">${String(i+1).padStart(2,"0")} · ${n.toUpperCase()}</option>`).join("");$("trk0").onchange=e=>{cfg.t=+e.target.value;pv()};
+$("drv").innerHTML=DR.map((d,i)=>`<div class="dv${i?"":" on"}" style="--k:${d.c}" data-i="${i}"><b>${d.a}</b> ${d.n}</div>`).join("");
+$("drv").onclick=e=>{const el=e.target.closest(".dv");if(!el)return;cfg.d=+el.dataset.i;[...$("drv").children].forEach(c=>c.classList.toggle("on",c==el))};
+$("rg").oninput=e=>{cfg.m=+e.target.value;upd()};
+opts("pits",["0 · FLAT OUT","1-STOP","2-STOP"],"p");opts("wx",WX,"w",tyo);tyo();opts("sng",SG.map(s=>s.n),"s",()=>{mon=1;play(cfg.s)});upd();pv();
+$("vol").oninput=e=>{const v=e.target.value/100;if(mg)mg.gain.value=v;if(cu)cu.volume=v};
+$("mp3").onchange=e=>{const f=e.target.files[0];if(!f)return;if(cu)cu.pause();cu=new Audio(URL.createObjectURL(f));cu.loop=true;cu.volume=$("vol").value/100;cfg.s=4;mon=1;[...$("sng").children].forEach(c=>c.classList.remove("on"));play(4)};
+$("vc").onclick=e=>{cfg.v=!cfg.v;e.target.textContent="🎙 ENGINEER: "+(cfg.v?"ON":"OFF");e.target.classList.toggle("on",cfg.v);if(!cfg.v&&window.speechSynthesis)speechSynthesis.cancel()};
+$("init").onclick=()=>{$("boot").style.display="none";$("setup").style.display="block";const h=new Date().getHours();sp(`Good ${h<12?"morning":h<18?"afternoon":"evening"}, sir. All systems online. Select your circuit, driver and strategy.`,1);play(cfg.s)};
+$("gob").onclick=go;$("nr").onclick=leave;
+$("pz").onclick=()=>{const g=G;if(!g||g.over)return;if(g.paused){g.pz+=Date.now()-g.fz0;g.paused=0;$("pz").textContent="PAUSE"}else{g.fz=(Date.now()-g.t0-g.pz)/1000;g.fz0=Date.now();g.paused=1;$("pz").textContent="RESUME"}};
+$("mu").onclick=()=>{mon=!mon;mon?play(cfg.s):stopM();$("mu").textContent="♪ "+(mon?"ON":"OFF")};
+$("ab").onclick=()=>{const b=$("ab");if(!b.c){b.c=1;b.textContent="CONFIRM?";setTimeout(()=>{b.c=0;b.textContent="ABORT"},3000)}else{b.c=0;b.textContent="ABORT";leave()}};
+</script></body></html>
